@@ -1,1 +1,1 @@
-web: python runserver.py
+web: gunicorn --workers=2 runserver:app
