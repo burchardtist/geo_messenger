@@ -2,6 +2,7 @@ import React from 'react';
 import  { View, Text, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
+import MessagesList from "./messagesList";
 
 const TopNavigation = () => (
   <View style={ styles.topNavigation }>
@@ -25,7 +26,7 @@ const TopNavigation = () => (
 export default IndexView = () => (
   <MenuContext style={{ flex: 1 }}>
     <TopNavigation/>
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Hello!</Text></View>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><MessagesList/></View>
   </MenuContext>
 )
 

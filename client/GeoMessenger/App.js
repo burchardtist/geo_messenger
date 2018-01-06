@@ -6,6 +6,6 @@ export default class HelloWorldApp extends Component {
   render() {
     return (
       <IndexView/>
-    );
+    )
   }
 }
