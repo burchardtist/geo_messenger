@@ -14,7 +14,6 @@ class MessagesList extends Component {
 
   componentDidMount() {
     MessagesApi.listMessages().then(({ messages }) => {
-      console.log(messages)
       this.setState({
         isLoading: false,
         messages: messages,

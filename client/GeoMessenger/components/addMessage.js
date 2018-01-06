@@ -16,14 +16,14 @@ class AddMessage extends Component {
   };
 
   handleSubmit = () => {
-    const formValues = this._form.getValue(); // use that ref to get the form value
+    const formValues = this._form.getValue();
     if (!formValues){
       return;
     }
     MessagesApi.addMessage(formValues)
       .then((responseJson) => {
-        const { navigate } = this.props.navigation;
-        navigate('Home');
+        const { goBack } = this.props.navigation;
+        goBack();
       })
   };
 

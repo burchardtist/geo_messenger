@@ -1,8 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-const Message = (item) => {
-  console.log(item);
+const Message = ({item}) => {
   const {title, text} = item;
   return (
     <View>
