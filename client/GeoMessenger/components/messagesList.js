@@ -39,7 +39,6 @@ class MessagesList extends Component {
 }
 
 const MessagesListView = ({messages}) => {
-  console.log('messssss', messages)
   if (!messages.length) {
     return (
       <Text style={styles.noMessages}>No messages</Text>

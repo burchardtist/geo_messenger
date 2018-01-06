@@ -3,6 +3,7 @@ import  { View, Text, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 import MessagesList from "./messagesList";
+import ActionButton from 'react-native-action-button';
 
 const TopNavigation = () => (
   <View style={ styles.topNavigation }>
@@ -26,7 +27,8 @@ const TopNavigation = () => (
 export default IndexView = () => (
   <MenuContext style={{ flex: 1 }}>
     <TopNavigation/>
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><MessagesList/></View>
+    <View style={styles.messagesList}><MessagesList/></View>
+    <ActionButton onPress={() => console.log('abc')}/>
   </MenuContext>
 )
 
@@ -41,5 +43,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+  },
+  messagesList: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
