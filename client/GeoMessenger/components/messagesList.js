@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, ListView, Text, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, FlatList, Text, View, StyleSheet } from 'react-native';
 import MessagesApi from "../api/api";
+import Message from "./message";
 
 class MessagesList extends Component {
   constructor(props) {
@@ -12,7 +13,8 @@ class MessagesList extends Component {
   }
 
   componentDidMount() {
-    MessagesApi.listMessages().then(({messages}) => {
+    MessagesApi.listMessages().then(({ messages }) => {
+      console.log(messages)
       this.setState({
         isLoading: false,
         messages: messages,
@@ -31,7 +33,6 @@ class MessagesList extends Component {
 
     return (
       <View style={{flex: 1, paddingTop: 20}}>
-        <Text style={styles.messagesList}>Messages List</Text>
         <MessagesListView messages={this.state.messages}/>
       </View>
     );
@@ -45,12 +46,11 @@ const MessagesListView = ({messages}) => {
     )
   }
 
-  let lv = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-  lv.cloneWithRows(messages);
   return (
-    <ListView
-      dataSource={messages}
-      renderRow={(rowData) => <Text>{rowData.title}, {rowData.text}</Text>}
+    <FlatList
+      data={messages}
+      renderItem={({item}) => <Message item={item}/> }
+      keyExtractor={(item, index) => item.id}
     />
   )
 };

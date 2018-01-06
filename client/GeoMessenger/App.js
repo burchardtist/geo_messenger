@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import IndexView from "./components/indexView";
+import HomeView from "./components/homeView";
+import { StackNavigator } from 'react-navigation';
+import AddMessage from "./components/addMessage";
 
-export default class HelloWorldApp extends Component {
+const Navigation = StackNavigator({
+  Home: { screen: HomeView },
+  AddMessage: { screen: AddMessage },
+});
 
+export default class App extends Component {
   render() {
-    return (
-      <IndexView/>
-    )
+    return <Navigation/>;
   }
 }

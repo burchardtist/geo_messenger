@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import  { View, Text, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
@@ -24,29 +24,46 @@ const TopNavigation = () => (
   </View>
 );
 
-export default IndexView = () => (
-  <MenuContext style={{ flex: 1 }}>
-    <TopNavigation/>
-    <View style={styles.messagesList}><MessagesList/></View>
-    <ActionButton onPress={() => console.log('abc')}/>
-  </MenuContext>
-)
+class HomeView extends Component {
+  static navigationOptions = {
+    title: 'Messages List',
+  };
+
+  render() {
+    const { navigate } = this.props.navigation;
+    return (
+      <View style={styles.container}>
+      <View style={styles.messagesList}><MessagesList/></View>
+      <ActionButton buttonColor="rgba(231,76,60,1)">
+        <ActionButton.Item
+          buttonColor="#9b59b6"
+          title="New Message"
+          onPress={() => navigate('AddMessage')}>
+          <Icon name="message" style={styles.actionButtonIcon} />
+        </ActionButton.Item>
+      </ActionButton>
+    </View>
+    )
+  }
+}
 
 const styles = StyleSheet.create({
-  topNavigation: {
-    paddingTop: 25,
-    paddingBottom: 5,
-    paddingRight: 10,
-    paddingLeft: 10,
-    flexDirection: 'row',
-    backgroundColor: 'lightblue',
-  },
-  title: {
-    fontSize: 20,
-  },
   messagesList: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  actionButtonIcon: {
+    fontSize: 20,
+    height: 22,
+    color: 'white',
+  },
 });
+
+export default HomeView;
