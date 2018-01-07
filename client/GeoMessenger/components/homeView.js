@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import  { View, StyleSheet, ScrollView } from 'react-native';
+import  { View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import MessagesList from "./messagesList";
 import ActionButton from 'react-native-action-button';
@@ -13,7 +13,7 @@ class HomeView extends Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-      <ScrollView style={styles.messagesList}><MessagesList/></ScrollView>
+      <View style={styles.messagesList}><MessagesList/></View>
       <ActionButton buttonColor="rgba(231,76,60,1)">
         <ActionButton.Item
           buttonColor="#9b59b6"

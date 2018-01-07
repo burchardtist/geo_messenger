@@ -7,24 +7,33 @@ class MessagesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true,
       messages: null,
     };
   }
 
-  componentDidMount() {
+  getMessages() {
     MessagesApi.listMessages().then(({ messages }) => {
       if(messages !== undefined) {
         this.setState({
-          isLoading: false,
           messages: messages,
-        })
+        });
       }
     });
   }
 
+  componentDidMount() {
+    this.getMessages();
+    this.messagesInterval = setInterval(() => {
+      this.getMessages()
+    }, 2000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.messagesInterval);
+  }
+
   render() {
-    if (this.state.isLoading) {
+    if (!this.state.messages) {
       return (
         <View style={{flex: 1, paddingTop: 20}}>
           <ActivityIndicator />
