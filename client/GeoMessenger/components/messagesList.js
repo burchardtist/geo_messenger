@@ -14,10 +14,12 @@ class MessagesList extends Component {
 
   componentDidMount() {
     MessagesApi.listMessages().then(({ messages }) => {
-      this.setState({
-        isLoading: false,
-        messages: messages,
-      })
+      if(messages !== undefined) {
+        this.setState({
+          isLoading: false,
+          messages: messages,
+        })
+      }
     });
   }
 

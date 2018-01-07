@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, StyleSheet, Button } from "react-native";
 import t from 'tcomb-form-native';
 import MessagesApi from "../api/api";
+import { NavigationActions } from 'react-navigation'
 
 const MessageForm = t.form.Form;
 
@@ -22,8 +23,15 @@ class AddMessage extends Component {
     }
     MessagesApi.addMessage(formValues)
       .then((responseJson) => {
-        const { goBack } = this.props.navigation;
-        goBack();
+        if(responseJson) {
+          const resetAction = NavigationActions.reset({
+            index: 0,
+            actions: [
+              NavigationActions.navigate({ routeName: 'Home'})
+            ]
+          });
+          this.props.navigation.dispatch(resetAction)
+        }
       })
   };
 

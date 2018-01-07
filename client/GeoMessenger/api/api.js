@@ -2,27 +2,29 @@ import settings from "../config/settings";
 
 const MessagesApi = {
   callApi: function(method, body) {
-    let callSettings = {
+    let options = {
       method: method
     };
 
     if(method === 'POST') {
-      settings['headers'] = {
+      options['headers'] = {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       };
-      console.log(JSON.stringify(body))
-      settings['body'] = JSON.stringify(body);
+      options['body'] = JSON.stringify(body);
     }
 
-    return fetch(
-      settings.apiUrl, {
-        method: method,
-        callSettings,
-      }).then((response) => response.json())
-      .catch((error) => {
-        console.error(error);
-      });
+    return new Promise((resolve, reject) => {
+      fetch(settings.apiUrl, options)
+        .then(response => {
+          if(response.ok) {
+            return resolve(response.json());
+          }
+          return reject(response.json());
+        }).catch((error) => {
+          console.error(error);
+        });
+    });
   },
   listMessages: function() {
     return this.callApi('GET');
