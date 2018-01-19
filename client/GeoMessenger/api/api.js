@@ -29,10 +29,14 @@ const MessagesApi = {
   listMessages: function() {
     return this.callApi('GET');
   },
-  addMessage: function({title, text}) {
+  addMessage: function({title, text, life_time, range, lat, lon}) {
     return this.callApi('POST', {
       title: title,
       text: text,
+      life_time: life_time,
+      range: range,
+      lat: lat,
+      lon: lon
     })
   }
 };

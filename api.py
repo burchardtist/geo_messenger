@@ -1,89 +1,81 @@
 import os
-from datetime import datetime
 
-from flask import Flask
-from flask_restful import Api, Resource, fields, marshal, reqparse
+from flask import Flask, jsonify, g
+from flask_httpauth import HTTPBasicAuth
+from flask_restful import marshal
 from flask_sqlalchemy import SQLAlchemy
 
-from consts import HTTP_CREATED
+from fields import message_fields
+from utils import response, parse_request
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'test')
 db = SQLAlchemy(app)
-api = Api(app)
+auth = HTTPBasicAuth()
 
-from models import MessagesModel
-
-message_fields = {
-    'id': fields.Integer,
-    'created': fields.DateTime(dt_format='rfc822'),
-    'life_time': fields.Integer,
-    'title': fields.String,
-    'text': fields.String,
-    'lat': fields.Float,
-    'lon': fields.Float,
-    'range': fields.Integer,
-}
+from models import UserModel, MessagesModel
 
 
-class Message(Resource):
-    def get(self, msg_id):
-        pass
-
-    def put(self, msg_id):
-        pass
-
-    def delete(self, msg_id):
-        pass
-
-
-class MessageList(Resource):
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        arguments = [
-            ('life_time', int, False, 10),
-            ('title', str, True, None),
-            ('text', str, True, None),
-            ('lat', str, False, 0.00),
-            ('lon', str, False, 0.00),
-            ('range', str, False, 5),
-        ]
-
-        for name, type_, required, default in arguments:
-            self.reqparse.add_argument(
-                name,
-                type=type_,
-                required=required,
-                help='{} not provided'.format(name),
-                location='json',
-                default=default
-            )
-        super(Resource, self).__init__()
-
-    def get(self):
-        return {'messages': [marshal(message, message_fields)
-                             for message in MessagesModel.all()]}
-
-    def post(self):
-        args = self.reqparse.parse_args()
-
-        message = MessagesModel(
-            created=datetime.now(),
-            life_time=args['life_time'],
-            title=args['title'],
-            text=args['text'],
-            lat=args['lat'],
-            lon=args['lon'],
-            range=args['range'],
-        )
-        db.session.add(message)
-        db.session.commit()
-
-        return {'message': marshal(message, message_fields)}, HTTP_CREATED
+@auth.verify_password
+def verify_password(username_or_token, password):
+    # first try to authenticate by token
+    user = UserModel.verify_auth_token(username_or_token)
+    if not user:
+        # Second try to authenticate by login credentials
+        user = UserModel.get_by_email(username_or_token)
+        if not user or not user.verify_password(password):
+            return False
+        g.user = user
+    return True
 
 
-api.add_resource(
-    Message, '/geomessages/api/v1.0/messages/<int:msg_id>', endpoint='message')
-api.add_resource(
-    MessageList, '/geomessages/api/v1.0/messages/', endpoint='messages')
+@app.route('/api/v1/token')
+@auth.login_required
+def get_auth_token():
+    duration = 600
+    token = g.user.generate_auth_token(duration)
+    return jsonify({
+        'token': token.decode('ascii'),
+        'duration': duration,
+        'message': 'After Duration: {duration} secs, request for a new token.'.format(duration=duration)
+})
+
+
+@app.route('/api/v1/addUser', methods=['POST'])
+def add_new_user():
+    fields = [
+        ('email', str, True, None),
+        ('password', str, True, None),
+        ('password_repeat', str, True, None),
+    ]
+    arguments = parse_request(fields)
+    UserModel.create(**arguments)
+    return response(dict(email=arguments['email']), 201)
+
+
+@app.route('/api/v1/messagesList', methods=['GET'])
+@auth.login_required
+def get_messages_list():
+    messages_data = marshal(MessagesModel.all(), message_fields)
+    return response(messages_data, 200)
+
+
+@app.route('/api/v1/addMessage', methods=['POST'])
+@auth.login_required
+def add_message():
+    fields = [
+        ('life_time', int, False, 10),
+        ('title', str, True, None),
+        ('text', str, True, None),
+        ('lat', str, False, 0.00),
+        ('lon', str, False, 0.00),
+        ('range', str, False, 5),
+    ]
+    arguments = parse_request(fields)
+    message = MessagesModel.create(**arguments)
+
+    message_data = marshal(message, message_fields)
+
+    return response(message_data, 200)

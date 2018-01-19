@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, FlatList, Text, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, Text, View, StyleSheet } from 'react-native';
+import { List } from 'react-native-elements';
 import MessagesApi from "../api/api";
 import Message from "./message";
 
@@ -57,10 +58,9 @@ const MessagesListView = ({messages}) => {
   }
 
   return (
-    <FlatList
+    <List
       data={messages}
-      renderItem={({item}) => <Message item={item}/> }
-      keyExtractor={(item, index) => item.id}
+      renderRow={({item}) => <Message item={item}/> }
     />
   )
 };
