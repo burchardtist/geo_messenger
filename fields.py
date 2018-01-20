@@ -26,6 +26,8 @@ req_parse_message = [
 
 
 def req_parse_to_field(req_parse, exclude=None):
+    if not exclude:
+        exclude = list()
     result = map(lambda x: x[:2], req_parse)
     return {k: map_types(v) for k, v in result if k not in exclude}
 
@@ -39,4 +41,4 @@ def map_types(field):
         return fields.DateTime(dt_format='rfc822')
 
 
-message_fields = req_parse_to_field(req_parse_message, exclude=['id', 'created'])
+message_fields = req_parse_to_field(req_parse_message)
