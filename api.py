@@ -32,7 +32,7 @@ def verify_password(username_or_token, password):
 
 
 @app.route('/api/v1/token')
-@auth.login_required
+# @auth.login_required
 def get_auth_token():
     duration = 600
     token = g.user.generate_auth_token(duration)
@@ -56,14 +56,14 @@ def add_new_user():
 
 
 @app.route('/api/v1/messagesList', methods=['GET'])
-@auth.login_required
+# @auth.login_required
 def get_messages_list():
     messages_data = marshal(MessagesModel.all(), message_fields)
     return response(messages_data, 200)
 
 
 @app.route('/api/v1/addMessage', methods=['POST'])
-@auth.login_required
+# @auth.login_required
 def add_message():
     arguments = parse_request(req_parse_message)
     message = MessagesModel.create(**arguments)
