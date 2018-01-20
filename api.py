@@ -5,7 +5,7 @@ from flask_httpauth import HTTPBasicAuth
 from flask_restful import marshal
 from flask_sqlalchemy import SQLAlchemy
 
-from fields import message_fields
+from fields import message_fields, req_parse_message
 from utils import response, parse_request
 
 app = Flask(__name__)
@@ -65,15 +65,7 @@ def get_messages_list():
 @app.route('/api/v1/addMessage', methods=['POST'])
 @auth.login_required
 def add_message():
-    fields = [
-        ('life_time', int, False, 10),
-        ('title', str, True, None),
-        ('text', str, True, None),
-        ('lat', str, False, 0.00),
-        ('lon', str, False, 0.00),
-        ('range', str, False, 5),
-    ]
-    arguments = parse_request(fields)
+    arguments = parse_request(req_parse_message)
     message = MessagesModel.create(**arguments)
 
     message_data = marshal(message, message_fields)

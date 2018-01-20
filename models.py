@@ -2,7 +2,6 @@ from datetime import datetime
 
 from itsdangerous import TimedJSONWebSignatureSerializer, Serializer, \
     SignatureExpired, BadSignature
-from parse import parse
 from passlib.apps import custom_app_context as pwd_context
 from sqlalchemy.exc import IntegrityError
 
@@ -35,7 +34,7 @@ class MessagesModel(db.Model):
 
     @classmethod
     def create(cls, **kwargs):
-        if 'created' not in kwargs:
+        if not kwargs.get('created', None):
             kwargs['created'] = datetime.now()
         message = MessagesModel(**kwargs)
         db.session.add(message)
@@ -67,9 +66,6 @@ class UserModel(db.Model):
             db.session.commit()
             return user
         except IntegrityError as e:
-            error = parse('duplicate key value violates unique constraint "{constraint}"\nDETAIL:  Key ({field})=({input}) already exists.\n', str(e.orig))
-            import ipdb
-            ipdb.set_trace()
             raise HTTPExceptionJson(e)
 
     @classmethod
