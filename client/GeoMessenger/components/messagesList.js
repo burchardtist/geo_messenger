@@ -26,7 +26,7 @@ class MessagesList extends Component {
     this.getMessages();
     this.messagesInterval = setInterval(() => {
       this.getMessages()
-    }, 2000);
+    }, 200000);
   }
 
   componentWillUnmount() {
