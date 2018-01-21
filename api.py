@@ -58,7 +58,7 @@ def add_new_user():
 @app.route('/api/v1/messagesList', methods=['GET'])
 # @auth.login_required
 def get_messages_list():
-    messages_data = marshal(MessagesModel.all(), message_fields)
+    messages_data = marshal(MessagesModel.all(), message_fields, 'messages')
     return response(messages_data, 200)
 
 

@@ -13,7 +13,9 @@ class MessagesList extends Component {
   }
 
   getMessages() {
-    MessagesApi.listMessages().then(({ messages }) => {
+    MessagesApi.listMessages().then((res) => {
+      console.log(res);
+      var messages = res.messages;
       if(messages !== undefined) {
         this.setState({
           messages: messages,
@@ -26,7 +28,7 @@ class MessagesList extends Component {
     this.getMessages();
     this.messagesInterval = setInterval(() => {
       this.getMessages()
-    }, 200000);
+    }, 2000);
   }
 
   componentWillUnmount() {
