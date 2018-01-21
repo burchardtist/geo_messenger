@@ -9,9 +9,9 @@ req_parse_message = [
     ('life_time', int, False, 10),
     ('title', str, True, None),
     ('text', str, True, None),
-    ('lat', float, True, 0.00),
-    ('lon', float, True, 0.00),
-    ('range', str, False, 5),
+    ('lat', float, True, None),
+    ('lon', float, True, None),
+    ('range', int, False, 5),
 ]
 
 
@@ -27,8 +27,11 @@ def map_types(field):
         return fields.String
     if field == int:
         return fields.Integer
+    if field == float:
+        return fields.Float
     if field == datetime:
         return fields.DateTime(dt_format='rfc822')
+    raise Exception('A type of "{}" is not supported'.format(field))
 
 
 message_fields = req_parse_to_field(req_parse_message)
