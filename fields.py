@@ -2,16 +2,6 @@ from datetime import datetime
 
 from flask_restful import fields
 
-# message_fields = {
-#     'id': fields.Integer,
-#     'created': fields.DateTime(dt_format='rfc822'),
-#     'life_time': fields.Integer,
-#     'title': fields.String,
-#     'text': fields.String,
-#     'lat': fields.Float,
-#     'lon': fields.Float,
-#     'range': fields.Integer,
-# }
 
 req_parse_message = [
     ('id', int, False, None),
@@ -19,8 +9,8 @@ req_parse_message = [
     ('life_time', int, False, 10),
     ('title', str, True, None),
     ('text', str, True, None),
-    ('lat', str, False, 0.00),
-    ('lon', str, False, 0.00),
+    ('lat', float, True, 0.00),
+    ('lon', float, True, 0.00),
     ('range', str, False, 5),
 ]
 

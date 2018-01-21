@@ -31,7 +31,9 @@ const styles = StyleSheet.create({
   messagesList: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: 'row',
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   container: {
     flex: 1,

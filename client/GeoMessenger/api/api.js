@@ -27,7 +27,17 @@ const MessagesApi = {
     });
   },
   listMessages: function() {
-    return this.callApi('messagesList', 'GET');
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          return resolve(
+            this.callApi(`messagesList?lat=${coords.latitude}&lon=${coords.longitude}`, 'GET')
+          )
+        },
+        (error) => console.error(error.message),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+      )
+    });
   },
   addMessage: function({title, text, life_time, range, lat, lon}) {
     return this.callApi('addMessage', 'POST', {

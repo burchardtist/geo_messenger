@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ActivityIndicator, Text, View, StyleSheet } from 'react-native';
 import { List } from 'react-native-elements';
+import { ListView } from 'react-native';
 import MessagesApi from "../api/api";
 import Message from "./message";
 
@@ -8,14 +9,12 @@ class MessagesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: null,
+      messages: [],
     };
   }
 
   getMessages() {
-    MessagesApi.listMessages().then((res) => {
-      console.log(res);
-      var messages = res.messages;
+    MessagesApi.listMessages().then(({ messages }) => {
       if(messages !== undefined) {
         this.setState({
           messages: messages,
@@ -38,19 +37,25 @@ class MessagesList extends Component {
   render() {
     if (!this.state.messages) {
       return (
-        <View style={{flex: 1, paddingTop: 20}}>
+        <View style={styles.spinner}>
           <ActivityIndicator />
         </View>
       );
     }
 
     return (
-      <View style={{flex: 1, paddingTop: 20}}>
+      <View style={styles.messagesList}>
         <MessagesListView messages={this.state.messages}/>
       </View>
     );
   }
 }
+
+const renderRow = (rowData, sectionID) => {
+  return (
+    <Message item={rowData}/>
+  )
+};
 
 const MessagesListView = ({messages}) => {
   if (!messages.length) {
@@ -59,21 +64,29 @@ const MessagesListView = ({messages}) => {
     )
   }
 
+  const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+  const dataSource = ds.cloneWithRows(messages);
+
   return (
-    <List
-      data={messages}
-      renderRow={({item}) => <Message item={item}/> }
-    />
+    <List>
+      <ListView
+        renderRow={renderRow}
+        dataSource={dataSource}
+      />
+    </List>
   )
 };
 
 const styles = StyleSheet.create({
   messagesList: {
-    fontSize: 20,
-    textAlign: 'center',
+    flex: 1,
   },
   noMessages: {
     textAlign: 'center',
+  },
+  spinner: {
+    flex: 1,
+    paddingTop: 20
   },
 });
 
