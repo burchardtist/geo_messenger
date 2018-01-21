@@ -63,18 +63,18 @@ def geo_distance(lat1, lon1, lat2, lon2):
     return distance.vincenty(coords_1, coords_2).km
 
 
-def is_message_available(lat, lon, message):
+def is_message_available(message):
     now = datetime.now()
     total_seconds = (now - message.created).total_seconds()
     minutes_passed = total_seconds/60
-
-    if is_message_in_range(lat, lon, message) \
-            and minutes_passed <= message.life_time:
+    if minutes_passed <= message.life_time:
         return True
     return False
 
 
 def is_message_in_range(lat, lon, message):
-    if geo_distance(lat, lon, message.lat, message.lon) <= message.range:
-        return True
+    msg_distance = geo_distance(lat, lon, message.lat, message.lon)
+
+    if msg_distance <= message.range:
+        return msg_distance
     return False

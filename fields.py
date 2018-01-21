@@ -15,11 +15,14 @@ req_parse_message = [
 ]
 
 
-def req_parse_to_field(req_parse, exclude=None):
+def req_parse_to_field(req_parse, exclude=None, additional=None):
     if not exclude:
         exclude = list()
     result = map(lambda x: x[:2], req_parse)
-    return {k: map_types(v) for k, v in result if k not in exclude}
+    result = {k: map_types(v) for k, v in result if k not in exclude}
+    if additional:
+        result = {**result, **additional}
+    return result
 
 
 def map_types(field):
@@ -34,4 +37,4 @@ def map_types(field):
     raise Exception('A type of "{}" is not supported'.format(field))
 
 
-message_fields = req_parse_to_field(req_parse_message)
+message_fields = req_parse_to_field(req_parse_message, additional=dict(distance=fields.Float))

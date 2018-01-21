@@ -7,7 +7,8 @@ from flask_restful import marshal
 from flask_sqlalchemy import SQLAlchemy
 
 from fields import message_fields, req_parse_message
-from utils import response, parse_request, is_message_available
+from utils import response, parse_request, is_message_available, \
+    is_message_in_range
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
@@ -68,10 +69,12 @@ def get_messages_list():
     )
 
     messages = MessagesModel.all()
-    available_messages = [
-        message for message in messages if is_message_available(
-            arguments['lat'], arguments['lon'], message)
-    ]
+    available_messages = list()
+    for message in messages:
+        msg_distance = is_message_in_range(arguments.lat, arguments.lon, message)
+        if msg_distance is not False and is_message_available(message):
+            available_messages.append(message)
+            setattr(message, 'distance', msg_distance)
     messages_data = marshal(available_messages, message_fields, 'messages')
     return response(messages_data, 200)
 
